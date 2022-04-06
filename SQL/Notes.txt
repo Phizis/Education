@@ -1,0 +1,97 @@
+use <name> - перейти на указанную
+show tables - показать имеющиеся таблицы
+describe <name> - информация по выбранной таблице(\G - построчно)
+SELECT <name> FROM <name> WHERE <name> = <condition> - показать информацию о <разделе> из <таблицы> где <раздел> соответствует <условию>
+(* - показать всю таблицу)
+ORDER BY <name> - сортировка по <столбцу> (DESC - по убыванию, ASC - по возрастанию)
+LIMIT <number> - количественное ограничение (напр.: топ-3)
+Например: 
+SELECT name, duration, students_count FROM Courses WHERE type=”PROGRAMMING” ORDER BY price LIMIT 3;
+
+SELECT DISTINCT - только уникальные результаты
+UNION - отобразить несколько запросов
+UNION ALL - отображение без исключений
+Например: 
+SELECT name FROM Students UNION SELECT name FROM Teachers;
+
+DATEDIFF(n,m) - разница во времени
+NOW() - текущее время
+<name> AS <name> - переименовать для отображения, например, если столбец отображает значения по формуле.
+Например: 
+SELECT regestration_date, DATEDIFF(NOW(), registration_date) AS date_since_reg FROM Students;
+
+IF(<условие>, <true>, <false>) - Если <условие> работает вывести true, если нет <false>
+Например: 
+SELECT name, IF(students_count>500, "FULL", "NOT FULL") AS status FROM Courses LIMIT 10;
+
+CONCAT() - запихай чо хошь
+Например
+SELECT CONCAT("Please buy our course '", name, "' it's only ", duration, " hours long and the price as low ", price, " rubles") FROM Courses limit 3;
+
+COUNT(*) - подсчитать кол-во значений в столбце
+AVG() - среднее значение по столбцу
+MAX(), MIN() - максимальное или минимальное значение
+SUM() - сумма по столбцу
+Например
+SELECT AVG(duration), MAX(students_count), MIN(price) FROM Courses;
+SELECT SUM(duration) as total_duration FROM Courses WHERE type = "MARKETING";
+
+
+JOIN ON - присоединить таблицу по условию
+Например
+SELECT price,
+Courses.name as course_name,
+Teachers.name as teacher_name
+FROM Courses
+JOIN Teachers ON Teachers.id = Courses.teacher_id
+WHERE type="MANAGEMENT"
+ORDER BY price LIMIT 4;
+Отобразить стоимость и название из курсов и присоединить таблицу учителей, чтобы отобразить ответственного за курс, по менеджменту, первые 4 штуки
+
+SELECT Courses.name as course_name,
+Students.name as student_name
+FROM Courses
+JOIN Subscriptions ON Course_id=Subscriptions.course_id
+JOIN Students ON Student_id = Subscriptions.student_id
+WHERE type = "DESIGN"
+ORDER BY Subscription_date LIMIT 10;
+Отобразить курсы по дизайну и первых зарегистрированных студентов на эти курсы, для этого взять таблицу подписок, присоединить её и сравнить её как с курсами, так и с присоединенными студентами, отсортировать по дате подписки, 10 штук
+
+GROUP BY - сгруппировать по типу
+Например:
+SELECT type, AVG(price) FROM Courses GROUP BY type;
+Для каждого типа отобразить среднюю цену
+
+select teachers.name as teacher_name, 
+count(*) as course_count from courses
+join teachers on teachers.id = courses.teacher_id 
+group by teachers.id order by(всегда после group by) count(*) desc limit 5;
+Отобразить учителей ведущих несколько курсов, для чего присоединяем к курсам учителей по ид.учителя, сортировка по убыванию, 5 штук
+
+INSERT INTO .. VALUES - вставить значения
+INSERT INTO Courses (name, duration, price, teacher_id) VALUES("sql", 2, 999999, 2);
+
+UPDATE .. SET .. WHERE - изменить значение
+UPDATE Courses SET price = 9000 WHERE id = 47;
+
+Подзапросы, когда м/у таблицами нет конкретных отношений, прим.:
+SELECT name, (SELECT COUNT(*) FROM Teachers WHERE Teachers.age > Students.age) as older_count FROM Students ORDER BY older_count DESC LIMIT 10;
+
+
+
+CREATE TABLE - создать новую таблицу
+CREATE TABLE PurchaseList2 (
+    -> student_name VARCHAR(500),
+    -> course_name VARCHAR(500),
+    -> price INT,
+    -> subscription_date DATETIME);
+
+INSERT INTO .. SELECT - заполнить таблицу элементами из других таблиц
+INSERT INTO PurchaseList2(student_name, course_name, subscription_date, price) 
+SELECT Students.name as sname,
+Courses.name as cname,
+Subscription_date, price FROM Courses
+JOIN Subscriptions ON Subscriptions.course_id = Courses.id
+JOIN Students ON Students.id = Subscriptions.student_id;
+
+ALTER TABLE Courses ADD COLUMN price_per_hour2 FLOAT; - Изменить таблицу курсов, добавив новый столбец
