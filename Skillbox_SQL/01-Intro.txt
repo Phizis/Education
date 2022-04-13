@@ -44,7 +44,6 @@ SELECT Students.name, Courses.duration FROM Students
 JOIN Subscriptions ON Subscriptions.student_id=Students.id
 JOIN Courses ON Courses.id=Subscriptions.course_id;
 
-
 2. Напишите запрос, который посчитает для каждого учителя средний возраст его учеников.
 В результате запрос возвращает две колонки: Имя Учителя — Средний Возраст Учеников.
 Ответ:

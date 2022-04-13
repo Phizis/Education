@@ -36,7 +36,6 @@ SUM() - сумма по столбцу
 SELECT AVG(duration), MAX(students_count), MIN(price) FROM Courses;
 SELECT SUM(duration) as total_duration FROM Courses WHERE type = "MARKETING";
 
-
 JOIN ON - присоединить таблицу по условию
 Например
 SELECT price,
@@ -76,8 +75,6 @@ UPDATE Courses SET price = 9000 WHERE id = 47;
 
 Подзапросы, когда м/у таблицами нет конкретных отношений, прим.:
 SELECT name, (SELECT COUNT(*) FROM Teachers WHERE Teachers.age > Students.age) as older_count FROM Students ORDER BY older_count DESC LIMIT 10;
-
-
 
 CREATE TABLE - создать новую таблицу
 CREATE TABLE PurchaseList2 (
